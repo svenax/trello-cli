@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+function addAllCommands($app)
+{
+    $dirIter = new \GlobIterator(__DIR__.'/../src/Command/*Command.php');
+    foreach ($dirIter as $fileInfo) {
+        $commandName = 'Svenax\\Trello\\Command\\'.$fileInfo->getBasename('.php');
+        $app->add(new $commandName());
+    }
+}
+
+$app = new Application('Trello CLI', '0.0.1-dev');
+addAllCommands($app);
+$app->run();

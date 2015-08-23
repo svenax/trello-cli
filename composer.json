@@ -1,0 +1,11 @@
+{
+  "require": {
+    "symfony/console": "~2.5",
+    "cdaguerre/php-trello-api": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "Svenax\\Trello\\": "src/"
+    }
+  }
+}
