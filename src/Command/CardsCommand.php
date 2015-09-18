@@ -27,7 +27,7 @@ class CardsCommand extends CommandBase
         $this
             ->setName('cards')
             ->setDefinition($this->createDefinition())
-            ->setDescription('List all boards')
+            ->setDescription('List all cards')
             ->setHelp(<<<TEXT
 The <info>%command.name%</info> command lists all open cards:
 
