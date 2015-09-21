@@ -84,8 +84,7 @@ TEXT
                 break;
               }
           }
-          $fmt = new \Parsedown();
-          // $text = $fmt->text($card['desc']);
+
           $this->addOutputStyles($output);
           $text = $card['desc'];
           $output->writeln("<info>{$card['name']}</>");

@@ -1,18 +1,44 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__.'/../vendor/autoload.php';
+
+require getPath('vendor/autoload.php');
 
 use Symfony\Component\Console\Application;
 
+$app = new Application('Trello CLI', '0.0.2-dev');
+addAllCommands($app);
+$app->run();
+
+// Support --------------------------------------------------------------------
+
 function addAllCommands($app)
 {
-    $dirIter = new \GlobIterator(__DIR__.'/../src/Command/*Command.php');
-    foreach ($dirIter as $fileInfo) {
+    $iter = new RegexIterator(
+        new RecursiveIteratorIterator(getIterator()),
+        '!src/Command/.*?Command.php!'
+    );
+    foreach ($iter as $fileInfo) {
         $commandName = 'Svenax\\Trello\\Command\\'.$fileInfo->getBasename('.php');
         $app->add(new $commandName());
     }
 }
 
-$app = new Application('Trello CLI', '0.0.1-dev');
-addAllCommands($app);
-$app->run();
+function getPath($path)
+{
+    if (extension_loaded('phar') && $uri = Phar::running()) {
+        $path = "$uri/$path";
+    } else {
+        $path = __DIR__ . "/../$path";
+    }
+
+    return $path;
+}
+
+function getIterator()
+{
+    if (extension_loaded('phar') && $uri = Phar::running(false)) {
+        return new Phar($uri);
+    } else {
+        return new RecursiveDirectoryIterator(__DIR__ . '/..');
+    }
+}
