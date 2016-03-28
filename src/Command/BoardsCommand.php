@@ -18,28 +18,29 @@ class BoardsCommand extends CommandBase
 
     /**
      * Set up the command definitions and help text for this command.
+     *
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
     protected function configure()
     {
         $this
-            ->setName('boards')
-            ->setDefinition($this->createDefinition())
-            ->setDescription('List all boards')
-            ->setHelp(<<<TEXT
+                ->setName('boards')
+                ->setDefinition($this->createDefinition())
+                ->setDescription('List all boards')
+                ->setHelp(<<<TEXT
 The <info>%command.name%</info> command lists all open boards:
 
   <info>%command.full_name% -c</info> shows also closed boards.
   <info>%command.full_name% -p</info> shows only private boards.
 TEXT
-            );
+                );
     }
 
     /**
      * Execute this command according to given switches and parameters.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     *
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,7 +49,6 @@ TEXT
         $closed = $input->getOption('closed');
 
         $client = Auth::getClient();
-        $manager = Auth::getManager();
 
         $table = new Table($output);
         $table->setStyle('compact');
@@ -64,15 +64,15 @@ TEXT
             $background = $board['prefs']['background'];
             $cardCount = count($client->board($board['id'])->cards()->filter($board['id'], $closed ? 'all' : 'open'));
             $flags = [
-                $board['closed'] ? 'Closed' : false,
-                $board['prefs']['permissionLevel'] === 'private' ? 'Private' : false,
-                $board['starred'] ? 'Starred' : false,
-                $board['pinned'] ? 'Pinned' : false,
+                    $board['closed'] ? 'Closed' : false,
+                    $board['prefs']['permissionLevel'] === 'private' ? 'Private' : false,
+                    $board['starred'] ? 'Starred' : false,
+                    $board['pinned'] ? 'Pinned' : false,
             ];
             $table->addRow([
-                $this->colorTag($board['name'], $background),
-                sprintf('%5d', $cardCount),
-                implode(', ', array_filter($flags)),
+                    $this->colorTag($board['name'], $background),
+                    sprintf('%5d', $cardCount),
+                    implode(', ', array_filter($flags)),
             ]);
         }
 
@@ -85,12 +85,13 @@ TEXT
      * Create the input definition for this command.
      *
      * @return InputDefinition
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
     protected function createDefinition()
     {
         return new InputDefinition([
-            new InputOption('closed', 'c', InputOption::VALUE_NONE, 'Show also closed boards'),
-            new InputOption('private', 'p', InputOption::VALUE_NONE, 'Show only private boards'),
+                new InputOption('closed', 'c', InputOption::VALUE_NONE, 'Show also closed boards'),
+                new InputOption('private', 'p', InputOption::VALUE_NONE, 'Show only private boards'),
         ]);
     }
 
@@ -99,10 +100,10 @@ TEXT
     private function colorTag($str, $trelloColor)
     {
         static $map = [
-            'blue' => 'fg=blue',
-            'green' => 'fg=green',
-            'pink' => 'fg=yellow',
-            'red' => 'fg=red',
+                'blue' => 'fg=blue',
+                'green' => 'fg=green',
+                'pink' => 'fg=yellow',
+                'red' => 'fg=red',
         ];
 
         if (isset($map[$trelloColor])) {

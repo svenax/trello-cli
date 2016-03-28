@@ -12,17 +12,17 @@ class Auth
 {
     const APP_KEY = '23b0f004544f7d890fc7f1a88f4fd6f8';
 
-    private static $client = null;
-    private static $manager = null;
+    private static $client;
+    private static $manager;
 
     public static function getClient()
     {
         if (self::$client === null) {
             self::$client = new Client();
             self::$client->authenticate(
-                self::APP_KEY,
-                Settings::get('user_token'),
-                Client::AUTH_URL_CLIENT_ID
+                    self::APP_KEY,
+                    Settings::get('user_token'),
+                    Client::AUTH_URL_CLIENT_ID
             );
         }
 
